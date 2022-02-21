@@ -48,10 +48,44 @@ class FindTest {
 	/**
 	 * Finds the given number `needle` in the given array `haystack` and returns its index,
 	 * or -1 if the given number is not in the given array.
-	 * The given array must be sorted in ascending order. 
+	 * The given array must be sorted in ascending order.
+	 * 
+	 * @pre
+	 *     | haystack != null
+	 * @pre The array `haystack` is sorted.
+	 *     | IntStream.range(0, haystack.length - 1).allMatch(i ->
+	 *     |     IntStream.range(i + 1, haystack.length).allMatch(j ->
+	 *     |          haystack[i] <= haystack[j]
+	 *     |     )
+	 *     | )
+	 * @pre
+	 *     | IntStream.range(0, haystack.length - 1).allMatch(i ->
+	 *     |     haystack[i] <= haystack[i + 1]
+	 *     | )
+	 *     
+	 * @post
+	 *     | Arrays.stream(haystack).anyMatch(e -> e == needle)
+	 *     | || result == -1
+	 *     
+	 * @post
+	 *     | result == -1 ||
+	 *     | 0 <= result && result < haystack.length && haystack[result] == needle
 	 */
 	int binarySearch(int[] haystack, int needle) {
-		
+		int start = 0;
+		int end = haystack.length;
+		while (start < end) {
+			int middle = start + (end - start) / 2;
+			if (needle < haystack[middle]) {
+				end = middle;
+			} else {
+				start = middle;
+			}
+		}
+		if (start < haystack.length && haystack[start] == needle)
+			return start;
+		else
+			return -1;
 	}
 
 	@Test
